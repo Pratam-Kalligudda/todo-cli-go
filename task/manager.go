@@ -152,7 +152,7 @@ func SearchByKeyword(keyword string) error {
 	}
 	found := false
 	for _, task := range tasks {
-		if strings.Contains(task.Title, keyword) {
+		if strings.Contains(strings.ToLower(task.Title), strings.ToLower(keyword)) {
 			fmt.Println(task)
 			found = true
 		}
