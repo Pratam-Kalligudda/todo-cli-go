@@ -7,15 +7,21 @@ import (
 )
 
 func main() {
-	err := task.Add("Complete ListTaskFeature")
-	if err != nil {
-		fmt.Println(err.Error())
+
+	// if err := task.Add("Complete aws"); err != nil {
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// fmt.Println("Successfully added task")
+
+	if err := task.ClearCompleted(); err != nil {
+		fmt.Println(err)
 		return
 	}
-	fmt.Println("Successfully added task")
+	// fmt.Println("Successfully deleted task ")
 
-	if err = task.ListAllTask(); err != nil {
-		fmt.Println(err.Error())
+	if err := task.ListAllTask(); err != nil {
+		fmt.Println(err)
 		return
 	}
 
