@@ -1,11 +1,15 @@
 package task
 
+import "time"
+
 // import(
 // 	"fmt"
 //)
 
 type Task struct {
-	ID    int
-	Title string
-	Done  bool
+	ID          int
+	Description string
+	Status      string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }

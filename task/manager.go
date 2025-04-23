@@ -3,6 +3,7 @@ package task
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 func Add(title string) error {
@@ -12,9 +13,11 @@ func Add(title string) error {
 	}
 
 	task := Task{
-		ID:    len(tasks) + 1,
-		Title: title,
-		Done:  false,
+		ID:          len(tasks) + 1,
+		Description: title,
+		Status:      "todo",
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
 	}
 
 	tasks = append(tasks, task)
@@ -24,7 +27,7 @@ func Add(title string) error {
 
 }
 
-func ListAllTask() error {
+func List(status string) error {
 	tasks, err := ReadFromFile()
 	if err != nil {
 		return fmt.Errorf("error while loading tasks : %w", err)
@@ -36,7 +39,14 @@ func ListAllTask() error {
 	}
 
 	for _, task := range tasks {
-		fmt.Println(task)
+
+		if task.Status == status {
+			fmt.Println(task)
+		} else if status == "" {
+			fmt.Println(task)
+		} else {
+			return fmt.Errorf("wrong status type")
+		}
 	}
 	return nil
 }
@@ -56,17 +66,19 @@ func DeleteTask(id int) error {
 	for i, task := range tasks {
 		if task.ID == id {
 			tasks = append(tasks[:i], tasks[i+1:]...)
-			if err = WriteToFile(tasks); err != nil {
-				return fmt.Errorf("error while writing file to tasks : %w", err)
-			}
-			return nil
+		}
+	}
+	for i, _ := range tasks {
+		tasks[i].ID = i + 1
+		if err = WriteToFile(tasks); err != nil {
+			return fmt.Errorf("error while writing file to tasks : %w", err)
 		}
 	}
 	return fmt.Errorf("no task with that id found : %w", err)
 
 }
 
-func MarkAsDone(id int) error {
+func UpdateStatus(id int, status string) error {
 	tasks, err := ReadFromFile()
 
 	if err != nil {
@@ -80,7 +92,8 @@ func MarkAsDone(id int) error {
 
 	for i, task := range tasks {
 		if task.ID == id {
-			tasks[i].Done = true
+			tasks[i].Status = status
+			tasks[i].UpdatedAt = time.Now()
 			if err = WriteToFile(tasks); err != nil {
 				return fmt.Errorf("error while writing file to tasks : %w", err)
 			}
@@ -102,9 +115,10 @@ func UpdateTitle(id int, title string) error {
 		return nil
 	}
 
-	for i, task := range tasks {
-		if task.ID == id {
-			tasks[i].Title = title
+	for i, _ := range tasks {
+		if tasks[i].ID == id {
+			tasks[i].Description = title
+			tasks[i].UpdatedAt = time.Now()
 			if err = WriteToFile(tasks); err != nil {
 				return fmt.Errorf("error while writing file to tasks : %w", err)
 			}
@@ -129,7 +143,7 @@ func ClearCompleted() error {
 
 	var updatedTask []Task
 	for _, task := range tasks {
-		if !task.Done {
+		if task.Status != "done" {
 			updatedTask = append(updatedTask, task)
 		}
 	}
@@ -152,7 +166,7 @@ func SearchByKeyword(keyword string) error {
 	}
 	found := false
 	for _, task := range tasks {
-		if strings.Contains(strings.ToLower(task.Title), strings.ToLower(keyword)) {
+		if strings.Contains(strings.ToLower(task.Description), strings.ToLower(keyword)) {
 			fmt.Println(task)
 			found = true
 		}

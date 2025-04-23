@@ -33,7 +33,7 @@ func Execute() {
 		}
 
 	case "list":
-		err := task.ListAllTask()
+		err := task.List("")
 		if err != nil {
 			fmt.Println("Error:", err)
 		}
@@ -48,7 +48,7 @@ func Execute() {
 			fmt.Println("Invalid task ID")
 			return
 		}
-		err = task.MarkAsDone(id)
+		err = task.UpdateStatus(id, "done")
 		if err != nil {
 			fmt.Println("Error:", err)
 		} else {
