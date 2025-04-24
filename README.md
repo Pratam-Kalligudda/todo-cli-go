@@ -1,39 +1,55 @@
-"# Todo CLI in Go" 
+# 📝 Todo CLI App in Go
 
-🔜 done <id>
-➝ Mark a task as completed
+A simple and fast command-line todo list application built with Go. Manage your tasks from the terminal efficiently — add, list, update, mark progress, search, and delete tasks with ease!
 
-🔜 delete <id>
-➝ Remove a task
+## 📦 Installation
 
-🔜 edit <id> <new title>
-➝ Rename a task
+1. **Clone the repository:**
 
-🔜 clear
-➝ Delete all completed tasks
+```bash
+git clone https://github.com/Pratam-Kalligudda/todo-cli-go.git
+cd todo-cli-go
+```
 
-🔜 find <keyword>
-➝ Search tasks by title
+2. **Build the app:**
 
-🔜 list --done / list --pending
-➝ Filter by completed/incomplete
+```bash
+if on windows: go build -o todo.exe
+else : go build -o todo
+```
 
-🔜 Task auto-ID (non-repeating even after delete)
-➝ Use UUIDs or increment max ID instead of len+1
+3. **Run it:**
 
-🔜 Friendly CLI output
-➝ Colors, emojis, timestamps (e.g. ✅ vs ❌)
+```bash
+./todo <command> [arguments]
+```
 
-🔜 export
-➝ Save tasks to .txt or .csv file for printing/sharing
+# Commands
 
-🔜 import
-➝ Load tasks from external .json
+Command | Description
+add `<task title>` | Add a new task
+list | List all tasks
+list --done | List all completed tasks
+list --in-progress | List all in-progress tasks
+list --not-done | List all tasks not marked as done
+mark-done `<task id>` | Mark task as done
+mark-in-progress `<task id>` | Mark task as in-progress
+update `<task id>` `<title>` | Update the title of a task
+search `<keyword>` | Search tasks by keyword
+delete `<task id>` | Delete a task
+help / --help | Show help message
 
-🔜 Add dueDate, priority, tags to each task
-➝ Makes your tool a real-world productivity app
+**Example**
 
-🔜 sort
-➝ Sort tasks by name, date, priority, etc.
+./todo add "Finish writing blog post"
+./todo list
+./todo list --done
+./todo mark-done 2
+./todo update 3 "Update project documentation"
+./todo search blog
+./todo delete 1
+
+**Tech Stack**
+Language: Go (Golang)
 
 https://roadmap.sh/projects/task-tracker

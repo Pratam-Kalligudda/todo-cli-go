@@ -27,7 +27,7 @@ func Add(title string) error {
 
 }
 
-func List(status string) error {
+func List(status string, flag bool) error {
 	tasks, err := ReadFromFile()
 	if err != nil {
 		return fmt.Errorf("error while loading tasks : %w", err)
@@ -37,16 +37,28 @@ func List(status string) error {
 		fmt.Println("No tasks found.")
 		return nil
 	}
-
+	found := false
 	for _, task := range tasks {
+		checkStatus := false
+		if flag {
+			checkStatus = task.Status == status
+		} else {
+			checkStatus = task.Status != status
+		}
 
-		if task.Status == status {
+		// fmt.Printf("Status : %v, checkStatus : %v, flag : %v\n", task.Status, checkStatus, flag)
+
+		if checkStatus {
 			fmt.Println(task)
+			found = true
 		} else if status == "" {
 			fmt.Println(task)
-		} else {
-			return fmt.Errorf("wrong status type")
+			found = true
 		}
+
+	}
+	if !found {
+		return fmt.Errorf("nothing matches the status in your list")
 	}
 	return nil
 }
@@ -62,20 +74,24 @@ func DeleteTask(id int) error {
 		fmt.Println("No tasks found to delete.")
 		return nil
 	}
-
+	found := false
 	for i, task := range tasks {
 		if task.ID == id {
+			found = true
 			tasks = append(tasks[:i], tasks[i+1:]...)
 		}
 	}
-	for i, _ := range tasks {
-		tasks[i].ID = i + 1
-		if err = WriteToFile(tasks); err != nil {
-			return fmt.Errorf("error while writing file to tasks : %w", err)
-		}
+	if !found {
+		return fmt.Errorf("no task with that id found : %w", err)
 	}
-	return fmt.Errorf("no task with that id found : %w", err)
 
+	for i := range tasks {
+		tasks[i].ID = i + 1
+	}
+	if err = WriteToFile(tasks); err != nil {
+		return fmt.Errorf("error while writing file to tasks : %w", err)
+	}
+	return nil
 }
 
 func UpdateStatus(id int, status string) error {

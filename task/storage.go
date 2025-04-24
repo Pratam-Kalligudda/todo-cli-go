@@ -28,7 +28,16 @@ func ReadFromFile() ([]Task, error) {
 	var tasks []Task
 	data, err := os.ReadFile(file)
 	if err != nil {
-		return nil, fmt.Errorf("error while reading file : %w", err)
+		if os.IsNotExist(err) {
+			// Create empty file if it doesn't exist
+			emptyFile, createErr := os.Create(file)
+			if createErr != nil {
+				return nil, fmt.Errorf("failed to create file: %w", createErr)
+			}
+			emptyFile.Close()
+			return []Task{}, nil
+		}
+		return nil, fmt.Errorf("error while reading file: %w", err)
 	}
 
 	if len(data) == 0 {
